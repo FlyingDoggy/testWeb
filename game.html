@@ -3,6 +3,10 @@
 	<head>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 		<script src="js/game.js"></script>
+		<style type = "text/css">
+		canvas {
+		    background-color: #cccccc;
+		}</style>
 	</head>
 	<body>
 		<div id="container">
@@ -12,7 +16,7 @@
 			<div id="left-content">
 				<h2>Game</h2>
 				<p>Generation counter: <span id="counter">0</span></p>
-				<canvas id="game_canvas" width="802" height="401"></canvas>
+				<canvas id="game_canvas" width="800" height="400"></canvas>
 			</div>
 			<div id="right-content">
 				<h2>Controls</h2>
@@ -24,6 +28,10 @@
 	            <a id="speedup" href="javascript:void(0)">Speed up</a>
 	            <a id="speeddown" href="javascript:void(0)">Speed down</a><br />
 	            <input id = "speed" type ="range" min = "10" max = "500" step = "49" value = 50>
+				<a id="save" href="javascript:void(0)">Save</a>
+				<a id="load" href="javascript:void(0)">Load</a><br />
+
+
 				<br />
 				<br />
 

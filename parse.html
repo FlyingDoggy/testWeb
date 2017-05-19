@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>Click the button to display the array values after the split.</p>
+
+<button onclick="myFunction()">Try it</button>
+
+<p id="cell"></p>
+<p id="x"></p>
+<p id="y"></p>
+<p id="coor"></p>
+
+
+
+
+<script>
+Array.matrix = function (m, n, initial) {
+    var a, i, j, mat = [];
+    for (i = 0; i < m; i += 1) {
+        a = [];
+        for (j = 0; j < n; j += 1) {
+            a[j] = 0;
+        }
+        mat[i] = a;
+    }
+    return mat;
+};
+function myFunction() {
+    var str = "C8X6Y6L4,3/4,4/2,2/1,1/0,0/E";
+    var CELL_SIZE = parseInt(str.substring(str.indexOf("C")+1,str.indexOf("X")));
+    var X = parseInt(str.substring(str.indexOf("X")+1,str.indexOf("Y")));
+	var Y = parseInt(str.substring(str.indexOf("Y")+1,str.indexOf("L")));
+    var coord = str.slice(str.indexOf("L")+1);
+    var mat = Array.matrix(Y, X, 0);
+
+    while(!coord.startsWith("E")){
+        var coords = coord.substring(0,coord.indexOf("/"));
+        console.log(coords);
+        var loc = coords.split(",");
+        mat[parseInt(loc[0])][parseInt(loc[1])] = 1;
+        coord = coord.slice(coord.indexOf("/")+1);
+
+    }
+    document.getElementById("cell").innerHTML = CELL_SIZE;
+    document.getElementById("x").innerHTML = X;
+    document.getElementById("y").innerHTML = Y;
+    document.getElementById("coor").innerHTML = mat;
+
+
+
+
+
+
+}
+</script>
+
+</body>
+</html>
