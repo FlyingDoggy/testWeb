@@ -1,3 +1,4 @@
+
 //convert the game data to string for database
 function gridToString(object){
     var string = "C";
@@ -94,6 +95,8 @@ Array.matrix = function (m, n, initial) {
     }
     return mat;
 };
+var Life = {};
+
 document.addEventListener("DOMContentLoaded", function() {
     // From JavaScript: The good parts - Chapter 6. Arrays, Section 6.7. Dimensions
     var gridCanvas = document.getElementById('game_canvas');
@@ -108,16 +111,18 @@ document.addEventListener("DOMContentLoaded", function() {
     var speedRangeLink = document.getElementById("speed");
     var saveLink = document.getElementById("save");
     var loadLink = document.getElementById("load");
+    var deleteLink = document.getElementById("delete");
+    deleteLink.onclick = function(){
+        localStorage.removeItem("lastGrid");
 
-
+    };
     var width = gridCanvas.width;
     var height = gridCanvas.height;
-    var Life = {};
     initialiseObject(Life,8,gridCanvas);
     //var testString = gridToString(Life);
     var testString ="C8X1600Y800L1,1/1,2/1,3/E";
 
-    stringToGrid(testString,Life);
+    //stringToGrid(testString,Life);
     var context = gridCanvas.getContext('2d');
     context.clearRect(0, 0, width, height);
     drawGrid(context);
@@ -288,16 +293,47 @@ document.addEventListener("DOMContentLoaded", function() {
             start(Life);
         }
     };
+    function save_local(object){
+        if (typeof(Storage) !== "undefined") {
+            // Code for localStorage/sessionStorage.
+            var grid = gridToString(object);
+            localStorage.setItem("lastGrid", grid);
 
+        } else {
+            // Sorry! No Web Storage support..
+            alert("Web storage is unsupported in your browser.");
+
+        }
+    };
+    function load_local(object){
+        if (typeof(Storage) !== "undefined") {
+            // Code for localStorage/sessionStorage.
+            if(localStorage.getItem("lastGrid") != null){
+                if(localStorage.lastGrid.toString()!=""){
+                    stringToGrid(localStorage.lastGrid.toString(),Life);
+                    var context = gridCanvas.getContext('2d');
+                    context.clearRect(0, 0, width, height);
+                    drawGrid(context);
+                    updateAnimations();
+                    console.log(testString);
+                }
+            }
+
+
+        } else {
+            // Sorry! No Web Storage support..
+            alert("Web storage is unsupported in your browser.");
+
+        }
+    };
     //save button execution
     saveLink.onclick = function(){
-            saveGrid();
-
+        save_local(Life);
     };
     //load button execution
     loadLink.onclick = function(){
-            loadGrid();
-            updateAnimations();
+        load_local(Life);
+        updateAnimations();
     };
 
     function update() {
