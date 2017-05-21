@@ -13,20 +13,24 @@ function gridToString(object){
     string = string.concat("L");
     //the remainings are the coordinates of the cells that have state of ALIVE
     for(var i = 0; i < object.WIDTH; i++) {
-            for(var z = 0; z < object.HEIGHT; z++) {
-                if(object.grid[z][i]==object.ALIVE){
-                    var xCoord = z;
-                    var yCoord = i;
-                    var tempS = "";
-                    tempS = tempS.concat(xCoord.toString(),",",yCoord.toString());
-                    string = string.concat(tempS);
-                    string = string.concat("/");
-                }
+        for(var z = 0; z < object.HEIGHT; z++) {
+            if(object.grid[z][i]==object.ALIVE){
+                var xCoord = z;
+                var yCoord = i;
+                var tempS = "";
+                tempS = tempS.concat(xCoord.toString(),",",yCoord.toString());
+                string = string.concat(tempS);
+                string = string.concat("/");
             }
         }
+    }
     string = string.concat("E");
     return string;
 };
+// Converts canvas to an image
+function convertCanvasToImage(canvas,context) {
+
+}
 
 function initialiseObject(object, cellSize, canvas){
 
@@ -77,12 +81,12 @@ function pause(life){
     }
 };
 function sleep(milliseconds) {
-  var starting = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - starting) > milliseconds){
-      break;
+    var starting = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - starting) > milliseconds){
+            break;
+        }
     }
-  }
 }
 Array.matrix = function (m, n, initial) {
     var a, i, j, mat = [];
@@ -112,6 +116,8 @@ document.addEventListener("DOMContentLoaded", function() {
     var saveLink = document.getElementById("save");
     var loadLink = document.getElementById("load");
     var deleteLink = document.getElementById("delete");
+    var convertLink = document.getElementById("convert");
+
     deleteLink.onclick = function(){
         localStorage.removeItem("lastGrid");
 
@@ -125,7 +131,7 @@ document.addEventListener("DOMContentLoaded", function() {
     //stringToGrid(testString,Life);
     var context = gridCanvas.getContext('2d');
     context.clearRect(0, 0, width, height);
-    drawGrid(context);
+    drawGrid(context,Life.CELL_SIZE);
     updateAnimations();
     console.log(testString);
 
@@ -187,6 +193,34 @@ document.addEventListener("DOMContentLoaded", function() {
             }, life.DELAY);
             life.state = life.RUNNING;
         }
+    };
+    convertLink.onclick = function(){
+        var canvasSVGContext = new CanvasSVG.Deferred();
+        var smallCanvas = document.getElementById("small_canvas");
+
+        canvasSVGContext.wrapCanvas(smallCanvas);
+
+        var context = smallCanvas.getContext('2d');
+        context.clearRect(0, 0, smallCanvas.width, smallCanvas.height);
+        drawGrid(context,Life.CELL_SIZE*(smallCanvas.width/width));
+        for (var h = 0; h < Life.HEIGHT; h++) {
+            for (var w = 0; w < Life.WIDTH; w++) {
+                if (Life.grid[h][w] === Life.ALIVE) {
+                    context.fillStyle = "#262626";
+
+                } else {
+                    context.fillStyle = "#cccccc";
+                    //context.clearRect();
+                }
+                context.fillRect(
+                    w * Life.CELL_SIZE*(smallCanvas.width/width) +1,
+                    h * Life.CELL_SIZE*(smallCanvas.width/width) +1,
+                    Life.CELL_SIZE*(smallCanvas.width/width) -1,
+                    Life.CELL_SIZE*(smallCanvas.width/width) -1);
+                }
+            }
+        document.getElementById("captions").appendChild(context.getSVG());
+        console.log(context.getSVG().innerHTML);
     };
     // start button execution
     controlLinkStart.onclick = function() {
@@ -254,7 +288,7 @@ document.addEventListener("DOMContentLoaded", function() {
             Life.HEIGHT = Life.Y / Life.CELL_SIZE;
             var context = gridCanvas.getContext('2d');
             context.clearRect(0, 0, width, height);
-            drawGrid(context);
+            drawGrid(context,Life.CELL_SIZE);
             updateAnimations();
         }
     };
@@ -284,7 +318,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 Life.HEIGHT = Life.Y / Life.CELL_SIZE;
                 var context = gridCanvas.getContext('2d');
                 context.clearRect(0, 0, width, height);
-                drawGrid(context);
+                drawGrid(context,Life.CELL_SIZE);
                 updateAnimations();
             }
 
@@ -313,7 +347,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     stringToGrid(localStorage.lastGrid.toString(),Life);
                     var context = gridCanvas.getContext('2d');
                     context.clearRect(0, 0, width, height);
-                    drawGrid(context);
+                    drawGrid(context,Life.CELL_SIZE);
                     updateAnimations();
                     console.log(testString);
                 }
@@ -366,7 +400,7 @@ document.addEventListener("DOMContentLoaded", function() {
         Life.HEIGHT = savedLife.HEIGHT;
         var context = gridCanvas.getContext('2d');
         context.clearRect(0, 0, width, height);
-        drawGrid(context);
+        drawGrid(context,Life.CELL_SIZE);
         copyGrid(savedLife.grid,Life.grid);
     };
 
@@ -389,16 +423,16 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             counterSpan.innerHTML = Life.counter;
         };
-        function drawGrid(context){
+        function drawGrid(context,cellSize){
 
 
-            for (var x = 0; x <= Life.X; x += Life.CELL_SIZE) {
+            for (var x = 0; x <= Life.X; x += cellSize) {
                 context.moveTo(0.5 + x, 0);
                 context.lineTo(0.5 + x, Life.Y);
-                console.log(Life.CELL_SIZE);
+                console.log(cellSize);
 
             }
-            for (var y = 0; y <= Life.Y; y += Life.CELL_SIZE) {
+            for (var y = 0; y <= Life.Y; y += cellSize) {
                 context.moveTo(0, 0.5 + y);
                 context.lineTo(Life.X, 0.5 + y);
             }
@@ -408,7 +442,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (gridCanvas.getContext) {
             var context = gridCanvas.getContext('2d');
             var offset = Life.CELL_SIZE;
-            drawGrid(context);
+            drawGrid(context,Life.CELL_SIZE);
 
             function canvasClickHandler(event) {
                 var cell = getCursorPosition(event);

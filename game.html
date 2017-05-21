@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script src = "http://xn--dahlstrm-t4a.net/svg/libraries/canvas-svg/canvas-getsvg.js"></script>
 		<script src="js/game.js"></script>
 		<style type = "text/css">
 		canvas {
@@ -17,6 +18,8 @@
 				<h2>Game</h2>
 				<p>Generation counter: <span id="counter">0</span></p>
 				<canvas id="game_canvas" width="800" height="400"></canvas>
+				<canvas id="small_canvas" width="500" height="500" style="display: none;"></canvas>
+
 			</div>
 			<div id="right-content">
 				<h2>Controls</h2>
@@ -31,6 +34,10 @@
 				<a id="save" href="javascript:void(0)">Save</a>
 				<a id="load" href="javascript:void(0)">Load</a>
 				<a id="delete" href="javascript:void(0)">delete</a><br />
+				<a id="convert" href="javascript:void(0)">convert to image</a><br />
+				<div id="captions">
+
+				</div>
 
 
 				<br />
